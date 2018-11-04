@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>123</title>
+    <link rel="stylesheet" href="css/element-reset.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+<div id="app">
+    <div class="container">
+        <div class="title">问卷调查</div>
+        <ul class="base-information">
+            <li>培训人：王王王</li>
+            <li>时间：1029/01/02～2019/09/01</li>
+        </ul>
+        <div class="item">
+            <div class="item-title">1.你对这次啥啥啥满意吗？</div>
+            <el-checkbox-group v-model="checkList">
+                <el-checkbox label="复选框 A"></el-checkbox>
+                <el-checkbox label="复选框 B"></el-checkbox>
+                <el-checkbox label="复选框 C"></el-checkbox>
+            </el-checkbox-group>
+        </div>
+        <div class="item">
+            <div class="item-title">2.你对这次啥啥啥满意吗？</div>
+            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">
+            </el-input>
+        </div>
+        <div class="submit-content">
+            <el-button type="primary" class="submit">提交</el-button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    const el = new Vue({
+        el: '#app',
+        data() {
+            return {
+                checkList: ['选中且禁用', '复选框 A'],
+                textarea: ''
+            }
+        },
+        methods: {
+            fetchQestionnaire() {
+                axios.get('http://hufe.club:8000/api/getQuestionnaire', {
+                    params: {
+                        questionnaireId: '1'
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        created() {
+            this.fetchQestionnaire()
+        }
+    })
+</script>
+
+</html>

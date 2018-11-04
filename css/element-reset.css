@@ -1,0 +1,7 @@
+.el-checkbox {
+    display: block!important;
+    margin-bottom: 10px!important;
+}
+.el-checkbox+.el-checkbox {
+    margin-left: 0!important;
+}
