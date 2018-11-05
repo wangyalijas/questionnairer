@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>123</title>
+    <title>问卷调查</title>
     <link rel="stylesheet" href="css/element-reset.css">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="css/reset.css">
@@ -14,62 +14,79 @@
 
 <body>
 <div id="app">
-    <div class="container">
-        <div class="title">问卷调查</div>
+    <div class="container" v-if="templateData">
+        <div class="title" v-text="templateData.name"></div>
         <ul class="base-information">
-            <li>培训人：王王王</li>
-            <li>时间：1029/01/02～2019/09/01</li>
+            <li>培训人：<span v-text="templateData.author"></span></li>
         </ul>
-        <div class="item">
-            <div class="item-title">1.你对这次啥啥啥满意吗？</div>
+        <div class="item" v-for="(item, index) in templateData" v-if="templateData">
+            <div class="item-title">{{index+1}}.{{templateDat.name}}</div>
             <el-checkbox-group v-model="checkList">
                 <el-checkbox label="复选框 A"></el-checkbox>
                 <el-checkbox label="复选框 B"></el-checkbox>
                 <el-checkbox label="复选框 C"></el-checkbox>
             </el-checkbox-group>
         </div>
-        <div class="item">
-            <div class="item-title">2.你对这次啥啥啥满意吗？</div>
-            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">
-            </el-input>
-        </div>
+        <!--<div class="item">-->
+            <!--<div class="item-title">2.你对这次啥啥啥满意吗？</div>-->
+            <!--<el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">-->
+            <!--</el-input>-->
+        <!--</div>-->
         <div class="submit-content">
             <el-button type="primary" class="submit">提交</el-button>
         </div>
     </div>
 </div>
 </body>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    const el = new Vue({
-        el: '#app',
-        data() {
-            return {
-                checkList: ['选中且禁用', '复选框 A'],
-                textarea: ''
-            }
-        },
-        methods: {
-            fetchQestionnaire() {
-                axios.get('http://hufe.club:8000/api/getQuestionnaire', {
-                    params: {
-                        questionnaireId: '1'
-                    }
-                })
-                    .then(function (response) {
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
-        },
-        created() {
-            this.fetchQestionnaire()
-        }
-    })
-</script>
+  const el = new Vue({
+    el: '#app',
+    data() {
+      return {
+        checkList: ['选中且禁用', '复选框 A'],
+        textarea: '',
+        templateData: null
+      }
+    },
+    methods: {
+      fetchQestionnaire() {
+        let that = this;
+        axios.get('http://hufe.club:8000/api/getQuestionnaire', {
+          params: {
+            questionnaireId: 'A75CB3CC-27A3-4B1B-B1F8-028B853F27A1'
+          }
+        }).then(function ({data}) {
+          that.templateData = that.deserialize(data)
+        })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      deserialize(data) {
+        const result = [];
 
+        result.concat(data.answers, data.selections);
+
+
+        for (let i = 0; i < data.answers.length; i++) {
+          result.push(data.answers[i]);
+        }
+
+        for (let i = 0; i < data.selections.length; i++) {
+          result.push(data.selections[i]);
+        }
+
+        return result.sort((a, b) => {
+          return a.sort - b.sort
+        })
+      }
+    },
+    created() {
+      this.fetchQestionnaire()
+    }
+  })
+</script>
 </html>
