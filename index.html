@@ -19,19 +19,16 @@
         <ul class="base-information">
             <li>培训人：<span v-text="templateData.author"></span></li>
         </ul>
-        <div class="item" v-for="(item, index) in templateData" v-if="templateData">
-            <div class="item-title">{{index+1}}.{{templateDat.name}}</div>
-            <el-checkbox-group v-model="checkList">
-                <el-checkbox label="复选框 A"></el-checkbox>
-                <el-checkbox label="复选框 B"></el-checkbox>
-                <el-checkbox label="复选框 C"></el-checkbox>
-            </el-checkbox-group>
+        <div class="item" v-for="(item, index) in deserializeData">
+            <div class="item-title">{{index+1}}. {{item.name}}</div>
+            <el-radio-group  v-model="radio2"
+                             v-if="item && item.options"
+                             v-for="(option, index) in item.options">
+                <el-radio :label="3">{{option.name}}</el-radio>
+            </el-radio-group>
+            <el-input v-else type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">
+            </el-input>
         </div>
-        <!--<div class="item">-->
-            <!--<div class="item-title">2.你对这次啥啥啥满意吗？</div>-->
-            <!--<el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">-->
-            <!--</el-input>-->
-        <!--</div>-->
         <div class="submit-content">
             <el-button type="primary" class="submit">提交</el-button>
         </div>
@@ -46,9 +43,10 @@
     el: '#app',
     data() {
       return {
-        checkList: ['选中且禁用', '复选框 A'],
+        radio2: 3,
         textarea: '',
-        templateData: null
+        templateData: null,
+        deserializeData: null
       }
     },
     methods: {
@@ -59,7 +57,8 @@
             questionnaireId: 'A75CB3CC-27A3-4B1B-B1F8-028B853F27A1'
           }
         }).then(function ({data}) {
-          that.templateData = that.deserialize(data)
+            that.templateData = data;
+            that.deserializeData = that.deserialize(data)
         })
           .catch(function (error) {
             console.log(error);
